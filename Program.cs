@@ -14,29 +14,43 @@
 // Update 1.4: take command if added to commands method, keyword added to take method.(if clock or book written you can take Ancient book and Broken Clock.)
 // Update 1.5: 
 // added git - desktop update test.
+// case updated. in dice method shouldExit get commented temporary for fast-fix *******
+// areWeLost,isKeyTaken,isDiceTaken added.
+// Spagetti code continues.
+// gameui deleted. final stage added.
 
 Random random = new Random();
 Console.CursorVisible = true;
 bool shouldExit = false;
 bool isGhostAhead = true;
+bool isKeyTaken = false;
+bool isDiceTaken = false;
+bool areWeLost = false;
 
 // Items And Room names
 string[] rooms = ["Starting Room", "Old Study", "Mirror Hallway", "Basement", "Door to the Garden"];
 string[] items = ["Dice", "Key", "Ancient Book", "Candle", "Broken Clock"];
 
 
-string[] playerInventory = ["Inventory :"];
+string[] playerInventory = [];
 int currentRoom = 0;
-
 // Opening screen write game name and start.
 InitializeGame();
-while (!shouldExit)
+/* while (!shouldExit)
 {
+
     if (isGhostAhead)
         Battle();
     else
         Commands();
+} */
+if (!areWeLost)
+{
+    //Final Stage:
+    FinalStage();
+
 }
+
 
 // Reads input from the Console and moves the player
 void Commands()
@@ -47,29 +61,48 @@ void Commands()
         input = input.ToLower().Trim();
     else return;
 
-    if (input.StartsWith("take"))
-    {
-        Take(input);
-        return;
-    }
-
     switch (input)
     {
-        case "roll dice":
+        case string roll when input.StartsWith("roll"):
             Console.WriteLine("There is no enemy.");
             break;
         case "look":
             Look();
             break;
-        case "pick":
-            Console.WriteLine("pick up key");
+        case string open when input.StartsWith("open"):
+            if (isKeyTaken)
+            {
+                currentRoom++;
+                if (currentRoom == 5)
+                {
+                    shouldExit = true;
+                    break;
+                }
+                Console.WriteLine($"You unlock the next door and move forward into the {rooms[currentRoom - 1]}.");
+
+                isKeyTaken = false;
+                isDiceTaken = false;
+                isGhostAhead = true;
+                Console.WriteLine("Another ghost prepares to attack. Roll your dice!.");
+
+                break;
+
+            }
+            Console.WriteLine("The door is locked. You must have the key.");
             break;
-        case "open":
-            Console.WriteLine("opened door");
-            isGhostAhead = true;
-            break;
+
         case "help":
+            Console.WriteLine($"You are at: {rooms[currentRoom]}");
             Help();
+            break;
+        case string take when input.StartsWith("take"): //chatgpt
+            Take(input);
+            break;
+        case string inventory when input.StartsWith("inv"):
+            if (playerInventory.Length == 0)
+                Console.WriteLine("You carry nothing but your will.");
+            else
+                Console.WriteLine("Inventory: " + string.Join(", ", playerInventory));
             break;
         case "exit":
             shouldExit = true;
@@ -82,6 +115,7 @@ void Commands()
     }
 
 }
+
 void Take(string? input)
 {
     string[] keywords = ["dice", "key", "book", "candle", "clock"];
@@ -92,23 +126,38 @@ void Take(string? input)
         {
             Console.WriteLine("What do you want to take?");
             input = Console.ReadLine();
-            
+
             if (input != null)
                 foreach (string keyword in keywords)
                 {
                     if (input.Contains(keyword))
                         input = keyword;
                 }
-            
+
         }
         switch (input)
         {
             case "key":
+                if (!isKeyTaken)
+                {
+                    playerInventory = playerInventory.Append($"Key {currentRoom + 1}").ToArray();
+                    Console.WriteLine("Key taken. You can unlock the door.");
+                    isKeyTaken = true;
+                    break;
+                }
+                Console.WriteLine("You already took that key!");
                 break;
             case "dice":
-                playerInventory.Append("Dice").ToArray();
-                Console.WriteLine("Dice taken. Your power increased!");
+                if (!isDiceTaken)
+                {
+                    playerInventory = playerInventory.Append($"Dice {currentRoom + 1}").ToArray();
+                    Console.WriteLine("Dice taken. Your power increased!");
+                    isDiceTaken = true;
+                    break;
+                }
+                Console.WriteLine("You already took it!");
                 break;
+
             case "book":
                 break;
             case "candle":
@@ -120,6 +169,7 @@ void Take(string? input)
         }
     }
 }
+
 void Look()
 {
     Console.WriteLine("When you look around the room you see bunch of items");
@@ -133,6 +183,7 @@ void Look()
     }
     Console.WriteLine();
 }
+
 //Battle against ghost.
 void Battle()
 {
@@ -160,17 +211,15 @@ void Battle()
     } while (true);
 }
 
-
-
 //Inventory dice calculator
 int InventoryDiceCount()
 {
     int inventoryDiceCount = 7;
-    for(int i=0;i<playerInventory.Length;i++)
+    for (int i = 0; i < playerInventory.Length; i++)
     {
-        if (playerInventory[i].Contains("Dice")) 
+        if (playerInventory[i].Contains("Dice"))
         {
-            inventoryDiceCount+=5;
+            inventoryDiceCount += 5;
         }
     }
     return inventoryDiceCount;
@@ -191,15 +240,58 @@ bool Dice(int diceCount = 7)
         Console.WriteLine("You LOST! You are going to trap here forever.");
         Console.WriteLine("Press Enter to exit.");
         Console.ReadLine();
-        //shouldExit = true;
+        shouldExit = true;
+        areWeLost = true;
         return false; //we lose
     }
 }
 // Help commands
 void Help()
 {
-    Console.WriteLine("look, pick {item}, open door, help, roll, exit, look back");
+    Console.WriteLine("look, take {item}, open door, help, roll, exit,inventory, look back");
 }
+
+void FinalStage()
+{
+    Console.Clear();
+    Console.WriteLine("=======================================");
+    Console.WriteLine("\tvoid Back() {return;}");
+    Console.WriteLine("=======================================");
+    Console.WriteLine("  \tESCAPE SUCCESSFUL");
+    Console.WriteLine("---------------------------------------\n");
+
+    Console.WriteLine("  The final door creaks open. Cold air rushes in.");
+    Console.WriteLine("  You step into a garden, surrounded by barbed wire.\n");
+    Console.WriteLine("  As you push through, sharp thorns cut into your skin.\n");
+    Console.WriteLine("  Blood drips onto the ground. A scream echoes behind you...\n");
+    Console.WriteLine("  But you do not look back.\n  The gray sky begins to clear.\n  The nightmare is over.\n  Or is it?");
+
+    Console.WriteLine("\nPress Enter to Exit. But... something whispers behind you.");
+    WriteAnimation();
+
+    string? input = Console.ReadLine()?.ToLower();
+
+    if (input == "look back")
+    {
+        Console.WriteLine("You turn, but see nothing. The whisper stops. You walk into the light. You are free.");
+    }
+    else
+    {
+        int chance = random.Next(2);
+        if (chance == 0)
+        {
+            Console.WriteLine("You ignore the whisper. A claw tears through the veil. You vanish into the dark.");
+            shouldExit = true;
+        }
+        else
+        {
+            Console.WriteLine("You charge forward without looking. The whisper fades. You made it out—barely.");
+        }
+    }
+
+    Console.WriteLine("\n\n  >> GAME OVER <<");
+}
+
 
 // Clears the console, displays the first message.
 void InitializeGame()
