@@ -36,14 +36,14 @@ string[] playerInventory = [];
 int currentRoom = 0;
 // Opening screen write game name and start.
 InitializeGame();
-/* while (!shouldExit)
+while (!shouldExit)
 {
 
     if (isGhostAhead)
         Battle();
     else
         Commands();
-} */
+}
 if (!areWeLost)
 {
     //Final Stage:
@@ -273,19 +273,19 @@ void FinalStage()
 
     if (input == "look back")
     {
-        Console.WriteLine("You turn, but see nothing. The whisper stops. You walk into the light. You are free.");
+        Console.Write("You turn, but see nothing. The whisper stops. You walk into the light. You are free.");
     }
     else
     {
         int chance = random.Next(2);
         if (chance == 0)
         {
-            Console.WriteLine("You ignore the whisper. A claw tears through the veil. You vanish into the dark.");
+            Console.Write("You ignore the whisper. A claw tears through the veil. You vanish into the dark.");
             shouldExit = true;
         }
         else
         {
-            Console.WriteLine("You charge forward without looking. The whisper fades. You made it out—barely.");
+            Console.Write("You charge forward without looking. The whisper fades. You made it out—barely.");
         }
     }
 
