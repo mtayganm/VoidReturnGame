@@ -78,7 +78,7 @@ void Commands()
                     shouldExit = true;
                     break;
                 }
-                Console.WriteLine($"You unlock the next door and move forward into the {rooms[currentRoom - 1]}.");
+                Console.WriteLine($"You unlock the next door and move forward into the {rooms[currentRoom]}.");
 
                 isKeyTaken = false;
                 isDiceTaken = false;
