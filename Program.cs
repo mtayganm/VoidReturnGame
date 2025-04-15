@@ -270,26 +270,36 @@ void FinalStage()
     WriteAnimation();
 
     string? input = Console.ReadLine()?.ToLower();
-
-    if (input == "look back")
+    bool isGameOver = false;
+    while (!isGameOver)
     {
-        Console.Write("You turn, but see nothing. The whisper stops. You walk into the light. You are free.");
-    }
-    else
-    {
-        int chance = random.Next(2);
-        if (chance == 0)
+        if (input == "look back")
         {
-            Console.Write("You ignore the whisper. A claw tears through the veil. You vanish into the dark.");
-            shouldExit = true;
+            Console.Write("You turn, but see nothing. The whisper stops. You walk into the light. You are free.");
+            isGameOver = true;
+        }
+        else if (input == "help")
+        {
+            Help();
         }
         else
         {
-            Console.Write("You charge forward without looking. The whisper fades. You made it out—barely.");
+            int chance = random.Next(2);
+            if (chance == 0)
+            {
+                Console.Write("You ignore the whisper. A claw tears through the veil. You vanish into the dark.");
+                isGameOver = true;
+            }
+            else
+            {
+                Console.Write("You charge forward without looking. The whisper fades. You made it out—barely.");
+                isGameOver = true;
+            }
         }
     }
 
     Console.WriteLine("\n\n  >> GAME OVER <<");
+    Console.ReadLine();
 }
 
 
