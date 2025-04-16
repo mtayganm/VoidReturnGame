@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-class GPTCreatedVersion
+class Program
 {
     static string[] rooms = { "Foyer", "Library", "Dining Hall", "Gallery", "Throne Room" };
     static bool[] ghostDefeated = new bool[5];
