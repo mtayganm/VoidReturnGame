@@ -3,11 +3,11 @@
 // *Look mechanic we can search the current room. 
 // **Use Array include room name, item name.
 // *Take mechanic we can take item to our inventory.
-// Open door mechanic to open door.
-// look back for easter egg. at the last room.
-// Each room we roll dice game to the new enemy.
-// Dice item for increase dice randoms. [start 7, increase 3, final 22]
-// Final screen write game over message.
+// *Open door mechanic to open door.
+// *look back for easter egg. at the last room.
+// *Each room we roll dice game to the new enemy.
+// *Dice item for increase dice randoms. [start 7, increase 3, final 22]
+// *Final screen write game over message.
 
 // Update 1.2: arrays added, inventory and current room declared, look commands included.
 // Update 1.3: take command added, there is no enemy added, restart game when lose first fight.
@@ -18,6 +18,9 @@
 // areWeLost,isKeyTaken,isDiceTaken added.
 // Spagetti code continues.
 // gameui deleted. final stage added.
+// endgame fixes applied.
+// Help added.
+// Help commands giving spesific messages each situtation.
 
 Random random = new Random();
 Console.CursorVisible = true;
@@ -66,7 +69,11 @@ void Commands()
         case string roll when input.StartsWith("roll"):
             Console.WriteLine("There is no enemy.");
             break;
+        case "fight":
+            Console.WriteLine("There is no enemy.");
+            break;
         case "look":
+            Console.WriteLine($"You are at: {rooms[currentRoom]}");
             Look();
             break;
         case string open when input.StartsWith("open"):
@@ -92,7 +99,7 @@ void Commands()
             break;
 
         case "help":
-            Console.WriteLine($"You are at: {rooms[currentRoom]}");
+
             Help();
             break;
         case string take when input.StartsWith("take"): //chatgpt
@@ -110,6 +117,8 @@ void Commands()
         default:
             if (input != "")
                 Console.WriteLine($"I dont that command. \"{input}\" ");
+            else
+                Console.WriteLine("Type 'help' to get assistance.");
             shouldExit = false;
             break;
     }
@@ -141,7 +150,7 @@ void Take(string? input)
                 if (!isKeyTaken)
                 {
                     playerInventory = playerInventory.Append($"Key {currentRoom + 1}").ToArray();
-                    Console.WriteLine("Key taken. You can unlock the door.");
+                    Console.WriteLine("Key taken. You can open the door.");
                     isKeyTaken = true;
                     break;
                 }
@@ -159,10 +168,13 @@ void Take(string? input)
                 break;
 
             case "book":
+                playerInventory = playerInventory.Append($"Book").ToArray();
                 break;
             case "candle":
+                playerInventory = playerInventory.Append($"Candle").ToArray();
                 break;
             case "clock":
+                playerInventory = playerInventory.Append($"Clock").ToArray();
                 break;
             default:
                 break;
@@ -193,18 +205,19 @@ void Battle()
         string? roll = Console.ReadLine();
         if (roll != null)
         {
-            if (roll == "roll" || roll == "roll dice" || roll == "r")
+            if (roll == "roll" || roll == "roll dice" || roll == "r" || roll == "fight")
             {
                 Dice(InventoryDiceCount());
                 break;
             }
             else if (roll == "help")
             {
-                Help();
+                Console.WriteLine(" >> 'roll dice' or 'fight' ");
+                //Help();
             }
             else
             {
-                Console.WriteLine("Roll dice to fight.");
+                Console.WriteLine("Roll dice to fight. >> 'roll dice' or 'fight'");
             }
         }
 
@@ -219,7 +232,7 @@ int InventoryDiceCount()
     {
         if (playerInventory[i].Contains("Dice"))
         {
-            inventoryDiceCount += 5;
+            inventoryDiceCount += 7;
         }
     }
     return inventoryDiceCount;
@@ -248,6 +261,10 @@ bool Dice(int diceCount = 7)
 // Help commands
 void Help()
 {
+    Console.WriteLine("Your goal is to escape the haunted chateau by progressing through 5 rooms.");
+    Console.WriteLine("Each room contains a ghost blocking your path and 5 mysterious items.");
+    Console.WriteLine("You must collect keys to unlock the doors.");
+    Console.WriteLine("Taking 'dice' increases your luck in battle.");
     Console.WriteLine("look, take {item}, open door, help, roll, exit,inventory, look back");
 }
 
@@ -264,15 +281,16 @@ void FinalStage()
     Console.WriteLine("  You step into a garden, surrounded by barbed wire.\n");
     Console.WriteLine("  As you push through, sharp thorns cut into your skin.\n");
     Console.WriteLine("  Blood drips onto the ground. A scream echoes behind you...\n");
-    Console.WriteLine("  But you do not look back.\n  The gray sky begins to clear.\n  The nightmare is over.\n  Or is it?");
+    Console.WriteLine("  But you do not look back.\n  The gray sky begins to clear.\n  The nightmare is over.");
 
-    Console.WriteLine("\nPress Enter to Exit. But... something whispers behind you.");
-    WriteAnimation();
+    Console.WriteLine("\nBut... something whispers behind you. Press Enter to Exit. ");
 
-    string? input = Console.ReadLine()?.ToLower();
     bool isGameOver = false;
     while (!isGameOver)
     {
+        WriteAnimation();
+
+        string? input = Console.ReadLine()?.ToLower();
         if (input == "look back")
         {
             Console.Write("You turn, but see nothing. The whisper stops. You walk into the light. You are free.");
@@ -280,7 +298,8 @@ void FinalStage()
         }
         else if (input == "help")
         {
-            Help();
+            Console.WriteLine("Is there bug behind your back?");
+            //Help();
         }
         else
         {
@@ -319,7 +338,7 @@ void InitializeGame()
     Console.WriteLine("  Hey, you. You're finally awake. Take the dice and face your fate...\n  Win, or trapped here forever.\n");
     Console.WriteLine("Dice taken.");
     //Console.WriteLine("  >> Type \"roll dice\" to fight. ");
-    //Console.WriteLine("  >> Type \"help\" for a list of commands. ");
+    Console.WriteLine("  >> Type \"help\" for a list of commands. ");
 }
 // >> and setcursorposition for better input view.
 void WriteAnimation()
