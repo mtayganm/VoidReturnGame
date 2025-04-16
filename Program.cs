@@ -20,7 +20,7 @@
 // gameui deleted. final stage added.
 // endgame fixes applied.
 // Help added.
-// Help commands giving spesific messages each situtation.
+// Help commands giving spesific messages each situtation. 21:20 16.04.2025
 
 Random random = new Random();
 Console.CursorVisible = true;
