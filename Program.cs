@@ -9,6 +9,8 @@
 // *Dice item for increase dice randoms. [start 7, increase 3, final 22]
 // *Final screen write game over message.
 
+// It was made with help from ChatGpt and Microsoft.Learn.
+
 // Update 1.2: arrays added, inventory and current room declared, look commands included.
 // Update 1.3: take command added, there is no enemy added, restart game when lose first fight.
 // Update 1.4: take command if added to commands method, keyword added to take method.(if clock or book written you can take Ancient book and Broken Clock.)
@@ -53,7 +55,8 @@ if (!areWeLost)
     FinalStage();
 
 }
-
+// GAME FINISHED
+// METHODS STARTS FROM HERE. 
 
 // Reads input from the Console and moves the player
 void Commands()
@@ -85,7 +88,7 @@ void Commands()
                     shouldExit = true;
                     break;
                 }
-                Console.WriteLine($"You unlock the next door and move forward into the {rooms[currentRoom]}.");
+                Console.WriteLine($"You open the next door and move forward into the {rooms[currentRoom]}.");
 
                 isKeyTaken = false;
                 isDiceTaken = false;
@@ -232,7 +235,7 @@ int InventoryDiceCount()
     {
         if (playerInventory[i].Contains("Dice"))
         {
-            inventoryDiceCount += 7;
+            inventoryDiceCount += 9;
         }
     }
     return inventoryDiceCount;
